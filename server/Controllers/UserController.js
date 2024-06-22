@@ -148,6 +148,68 @@ export const UnFollowUser = async (req, res) => {
     }
 }
 
+export const getUserCount = async (req, res) => {
+    try {
+        const usercount = await UserModel.countDocuments({ isAdmin: false });
+        res.status(200).json({ usercount });
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
 
+export const getAdminCount = async (req, res) => {
+    try {
+        const admincount = await UserModel.countDocuments({ isAdmin: true });
+        res.status(200).json({ admincount });
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
 
+export const getUserRegistrationStats = async (req, res) => {
+    try {
+        const currentDate = new Date();
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(currentDate.getMonth() - 1);
 
+        const registrationsLastMonth = await UserModel.countDocuments({
+            createdAt: { $gte: oneMonthAgo, $lt: currentDate }
+        });
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(currentDate.getDate() - 7);
+        const registrationsLastWeek = await UserModel.countDocuments({
+            createdAt: { $gte: oneWeekAgo, $lt: currentDate }
+        });
+        const oneDayAgo = new Date();
+        oneDayAgo.setDate(currentDate.getDate() - 1);
+        const registrationsLastDay = await UserModel.countDocuments({
+            createdAt: { $gte: oneDayAgo, $lt: currentDate }
+        });
+
+        res.status(200).json({
+            registrationsLastMonth,
+            registrationsLastWeek,
+            registrationsLastDay
+        });
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
+
+export const getUserList = async (req, res) => {
+    try {
+        const users = await UserModel.find({ isAdmin: false }).select("-password");
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
+
+export const getAdminList = async (req, res) => {
+    try {
+        const users = await UserModel.find({ isAdmin: true }).select("-password");
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}

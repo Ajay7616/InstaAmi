@@ -131,4 +131,20 @@ export const getTimelinePosts = async (req, res) => {
     }
 }
 
+export const getPostCount = async (req, res) => {
+    try {
+        const count = await PostModel.countDocuments();
+        res.status(200).json({ count });
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
 
+export const getPostList = async (req, res) => {
+    try {
+        const posts = await PostModel.find();
+        res.status(200).json({ posts });
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}

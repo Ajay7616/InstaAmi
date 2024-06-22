@@ -31,7 +31,7 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   const { username, password } = req.body;
   try {
-    const user = await UserModel.findOne({ username: username });
+    const user = await UserModel.findOne({ username: username, isAdmin: true  });
     if (user) {
       const validity = await bcrypt.compare(password, user.password);
       if (!validity)
